@@ -12,9 +12,21 @@ const bookRepository = {
     return book;
   },
   borrowBook: async (memberId, bookId) => {
-    const query = `INSERT INTO BorrowedBook (MemberID, BookID) VALUES ($1, $2) RETURNING *`;
-    const book = await db.one(query, [memberId, bookId]);
-    return book;
+    const borrowedBook = await db.tx(async (t) => {
+      const query = `
+                WITH updated_book AS (
+                    UPDATE Books
+                    SET Stock = Stock - 1
+                    WHERE Code = $1
+
+                )
+                INSERT INTO BorrowedBook (MemberID, BookID)
+                SELECT $2, $1
+            `;
+      const result = await t.one(query, [bookId, memberId]);
+      return result;
+    });
+    return borrowedBook;
   },
   countBorrowedBooks: async (id) => {
     const query = `

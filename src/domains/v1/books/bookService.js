@@ -46,7 +46,7 @@ const bookService = {
         });
       }
 
-      const book = await bookRepository.borrowBook(memberId, bookId);
+      await bookRepository.borrowBook(memberId, bookId);
       return res.status(201).json({
         status: 'success',
         code: 201,
@@ -56,7 +56,7 @@ const bookService = {
       return res.status(500).json({
         status: 'error',
         code: 500,
-        message: error.message,
+        message: 'Failed to borrow book',
       });
     }
   },
