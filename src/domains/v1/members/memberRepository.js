@@ -2,7 +2,19 @@ const db = require('../../../../infrastructures/database');
 
 const memberRepository = {
   getAllMembers: async () => {
-    const query = 'SELECT * FROM members';
+    const query = `
+       SELECT
+            m.Code,
+            m.MemberName,
+            COUNT(CASE WHEN bb.Status = 'Borrowed' THEN bb.BorrowedBookID END) AS Books_Borrowed_Now,
+            COUNT(CASE WHEN bb.Status = 'Returned On Time' THEN bb.BorrowedBookID END) AS Books_Returned_on_Time,
+            COUNT(CASE WHEN bb.Status = 'Returned Late' THEN bb.BorrowedBookID END) AS Books_Returned_Late
+        FROM
+            Members m
+        LEFT JOIN BorrowedBook bb ON m.Code = bb.MemberID
+        GROUP BY
+            m.Code, m.MemberName;
+    `;
     const members = await db.any(query);
     return members;
   },
