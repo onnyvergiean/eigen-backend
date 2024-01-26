@@ -1,8 +1,29 @@
 const db = require('../../../../infrastructures/database');
 const memberRepository = require('../members/memberRepository');
 const bookRepository = {
-  getAllBooksReady: async () => {
-    const query = 'SELECT * FROM books';
+  getAllAvailableBooks: async () => {
+    const query = `
+     SELECT
+        b.Code ,
+        b.Title,
+        b.Author,
+        b.Stock 
+    FROM
+        Books b
+    LEFT JOIN (
+        SELECT
+            BookID,
+            COUNT(*) AS BorrowedCount
+        FROM
+            BorrowedBook
+        WHERE
+            Status = 'Borrowed' AND ReturnDate IS NULL
+        GROUP BY
+            BookID
+    ) AS bb ON b.Code = bb.BookID
+    WHERE
+    b.Stock > 0;
+    `;
     const books = await db.any(query);
     return books;
   },

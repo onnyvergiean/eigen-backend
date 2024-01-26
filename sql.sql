@@ -1,7 +1,6 @@
 CREATE TABLE Members (
   Code VARCHAR(10) PRIMARY KEY,
   MemberName VARCHAR(255) NOT NULL,
-  PenaltyStatus BOOLEAN NOT NULL DEFAULT FALSE,
   PenaltyDate DATE DEFAULT NULL
 );
 
@@ -34,13 +33,8 @@ VALUES
     BookID VARCHAR NOT NULL,
     BorrowDate TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     ReturnDate TIMESTAMP,
+    Status VARCHAR(50) DEFAULT 'Borrowed';
     CONSTRAINT fk_member FOREIGN KEY (MemberID) REFERENCES Members(Code),
     CONSTRAINT fk_book FOREIGN KEY (BookID) REFERENCES Books(Code)
 );
 
-
-ALTER TABLE BorrowedBook
-ADD COLUMN Status VARCHAR(50) DEFAULT 'Borrowed';
-
-ALTER TABLE Members
-DROP COLUMN PenaltyStatus;

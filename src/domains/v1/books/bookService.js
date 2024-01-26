@@ -2,6 +2,22 @@ const db = require('../../../../infrastructures/database');
 const bookRepository = require('./bookRepository');
 const memberRepository = require('../members/memberRepository');
 const bookService = {
+  getAllAvailableBooks: async (req, res) => {
+    try {
+      const books = await bookRepository.getAllAvailableBooks();
+      return res.status(200).json({
+        status: 'success',
+        code: 200,
+        data: books,
+      });
+    } catch (error) {
+      return res.status(500).json({
+        status: 'error',
+        code: 500,
+        message: error.message,
+      });
+    }
+  },
   borrowBook: async (req, res) => {
     try {
       const { memberId, bookId } = req.params;
