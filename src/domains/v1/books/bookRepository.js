@@ -18,10 +18,11 @@ const bookRepository = {
                     UPDATE Books
                     SET Stock = Stock - 1
                     WHERE Code = $1
-
+                    
                 )
                 INSERT INTO BorrowedBook (MemberID, BookID)
-                SELECT $2, $1
+                SELECT $2, $1 returning *;
+
             `;
       const result = await t.one(query, [bookId, memberId]);
       return result;
