@@ -15,10 +15,20 @@ const memberRepository = {
     const query = `
         SELECT * 
         FROM Members 
-        WHERE MemberID = $1
-        AND PenaltyStatus = FALSE
+        WHERE Code = $1
+        AND PenaltyDate > CURRENT_DATE
     `;
-    const result = await db.oneOrNone(query, memberId);
+    const result = await db.oneOrNone(query, id);
+    return result;
+  },
+  updatePenalty: async (id, penaltyEndDate) => {
+    const query = `
+        UPDATE Members
+        SET PenaltyDate = $2
+        WHERE Code = $1
+        RETURNING *
+    `;
+    const result = await db.one(query, [id, penaltyEndDate]);
     return result;
   },
 };

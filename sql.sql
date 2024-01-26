@@ -37,3 +37,10 @@ VALUES
     CONSTRAINT fk_member FOREIGN KEY (MemberID) REFERENCES Members(Code),
     CONSTRAINT fk_book FOREIGN KEY (BookID) REFERENCES Books(Code)
 );
+
+
+ALTER TABLE BorrowedBook
+ADD COLUMN Status VARCHAR(50) DEFAULT 'Borrowed';
+
+ALTER TABLE Members
+DROP COLUMN PenaltyStatus;
